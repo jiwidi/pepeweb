@@ -5,18 +5,14 @@
   <link rel= "stylesheet" type= "text/css" href= "{{ url_for('static',filename='style.css') }}">
 </head>
 <body>
-    <form action="upload_photo" method="POST" enctype="multipart/form-data">
-      Upload File: <input type="file" name="file"><br>
-      <input type="submit" name="submit" value="Submit">
-    </form>
-    <form action="refresh" method="post">
-    <button name="forwardBtn" type="submit">Forward</button>
-    </form>
 		<div class="container-fluid">
 			<div  class="jumbotron">
 				<h1 class="text-center"> Rarepepe </h1>
+				<form action="refresh" method="post">
 				<h2 class="text-center"> The online collection of rarepes </h2>
-				<br> 
+				<button name="forwardBtn" type="submit">Forward</button>
+				</form>	
+							<br> 
 						<div class="thumbnail">
 								{% for image_entity in image_entities %}
 								<img src="{{image_entity['image_public_url']}}" width=200 height=200>
@@ -27,7 +23,12 @@
 			<footer class="text-center">
 				<hr>
 				<p>All copyrights belong to pepe.</p>
-			</footer>  
+
+				    <form action="upload_photo" method="POST" enctype="multipart/form-data">
+				      Upload File: <input type="file" name="file"><br>
+				      <input type="submit" name="submit" value="Submit">
+				    </form>
+				</footer>  
 		</div>
   </body>
 </html>
