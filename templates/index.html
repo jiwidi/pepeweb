@@ -10,9 +10,10 @@
   <h1>Datastore and Firebase Auth Example</h1>
 
   <h2>Last 10 visits</h2>
-  {% for time in times %}
-    <p>{{ time }}</p>
-  {% endfor %}
+    {% for image_entity in image_entities %}
+      <img src="{{image_entity['image_public_url']}}" width=200 height=200>
+      <p>{{image_entity['blob_name']}} was uploaded {{image_entity['timestamp']}}.</p>
+    {% endfor %}
 
 </body>
 </html>
