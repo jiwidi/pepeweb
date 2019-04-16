@@ -6,3 +6,4 @@ Pillow==6.0.0
 protobuf==3.7.1
 pytest==4.4.1
 google-cloud-datastore==1.7.3
+google-cloud-storage==1.14.0
