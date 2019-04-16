@@ -39,7 +39,7 @@ def root():
     image_entities = list(query.fetch())
     #Only 1 img, testing
     idx = (int) (random.randrange(0, len(image_entities)))
-    image_entities = [image_entities[0]]
+    image_entities = [image_entities[idx]]
 
     # Return a Jinja2 HTML template and pass in image_entities as a parameter.
     return render_template('index.html', image_entities=image_entities)
