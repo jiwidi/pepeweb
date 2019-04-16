@@ -37,6 +37,8 @@ def root():
     # each photo.
     query = datastore_client.query(kind='Pepe')
     image_entities = list(query.fetch())
+    #Only 1 img, testing
+    image_entities = [image_entities[[0]]]
 
     # Return a Jinja2 HTML template and pass in image_entities as a parameter.
     return render_template('index.html', image_entities=image_entities)
