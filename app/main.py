@@ -21,6 +21,8 @@ from flask import Flask, redirect, render_template, request
 
 from flask import Flask, render_template
 
+from google.cloud import datastore
+from google.cloud import storage
 app = Flask(__name__)
 
 
@@ -28,12 +30,16 @@ app = Flask(__name__)
 def root():
     # For the sake of example, use static information to inflate the template.
     # This will be replaced with real information in later steps.
-    dummy_times = [datetime.datetime(2018, 1, 1, 10, 0, 0),
-                   datetime.datetime(2018, 1, 2, 10, 30, 0),
-                   datetime.datetime(2018, 1, 3, 11, 0, 0),
-                   ]
+        # Create a Cloud Datastore client.
+    datastore_client = datastore.Client()
 
-    return render_template('index.html', times=dummy_times)
+    # Use the Cloud Datastore client to fetch information from Datastore about
+    # each photo.
+    query = datastore_client.query(kind='Pepe')
+    image_entities = list(query.fetch())
+
+    # Return a Jinja2 HTML template and pass in image_entities as a parameter.
+    return render_template('index.html', image_entities=image_entities)
 
 @app.route('/upload_photo', methods=['GET', 'POST'])
 def upload_photo():
