@@ -16,7 +16,7 @@
 from datetime import datetime
 import logging
 import os
-
+import random
 from flask import Flask, redirect, render_template, request
 
 from flask import Flask, render_template
@@ -38,6 +38,7 @@ def root():
     query = datastore_client.query(kind='Pepe')
     image_entities = list(query.fetch())
     #Only 1 img, testing
+    idx = (int) (random.randrange(0, len(image_entities)))
     image_entities = [image_entities[0]]
 
     # Return a Jinja2 HTML template and pass in image_entities as a parameter.
