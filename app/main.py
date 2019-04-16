@@ -13,7 +13,11 @@
 # limitations under the License.
 
 # [START gae_python37_render_template]
-import datetime
+from datetime import datetime
+import logging
+import os
+
+from flask import Flask, redirect, render_template, request
 
 from flask import Flask, render_template
 
@@ -30,6 +34,60 @@ def root():
                    ]
 
     return render_template('index.html', times=dummy_times)
+
+@app.route('/upload_photo', methods=['GET', 'POST'])
+def upload_photo():
+    photo = request.files['file']
+
+    # Create a Cloud Storage client.
+    storage_client = storage.Client()
+
+    # Get the bucket that the file will be uploaded to.
+    bucket = storage_client.get_bucket("pepes")
+
+    # Create a new blob and upload the file's content.
+    blob = bucket.blob(photo.filename)
+    blob.upload_from_string(
+            photo.read(), content_type=photo.content_type)
+
+    # Make the blob publicly viewable.
+    blob.make_public()
+
+    # Create a Cloud Datastore client.
+    datastore_client = datastore.Client()
+
+    # Fetch the current date / time.
+    current_datetime = datetime.now()
+
+    # The kind for the new entity.
+    kind = 'Pepe'
+
+    # The name/ID for the new entity.
+    name = blob.name
+
+    # Create the Cloud Datastore key for the new entity.
+    key = datastore_client.key(kind, name)
+
+    # Construct the new entity using the key. Set dictionary values for entity
+    # keys blob_name, storage_public_url, timestamp, and joy.
+    entity = datastore.Entity(key)
+    entity['blob_name'] = blob.name
+    entity['image_public_url'] = blob.public_url
+    entity['timestamp'] = current_datetime
+
+    # Save the new entity to Datastore.
+    datastore_client.put(entity)
+
+    # Redirect to the home page.
+    return redirect('/')
+
+@app.errorhandler(500)
+def server_error(e):
+    logging.exception('An error occurred during a request.')
+    return """
+    An internal error occurred: <pre>{}</pre>
+    See logs for full stacktrace.
+    """.format(e), 500
 
 
 if __name__ == '__main__':
