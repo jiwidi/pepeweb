@@ -44,6 +44,10 @@ def root():
     # Return a Jinja2 HTML template and pass in image_entities as a parameter.
     return render_template('index.html', image_entities=image_entities)
 
+@app.route('/refresh',methods=['GET','POST'])
+def refresh():
+    return redirect('/')
+
 @app.route('/upload_photo', methods=['GET', 'POST'])
 def upload_photo():
     photo = request.files['file']

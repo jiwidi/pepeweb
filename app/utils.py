@@ -70,9 +70,12 @@ def insertApprovedPepes():
 def insertFromFolder(path):
     appe = app()
     for item in os.listdir(path):  
-        img = Image.open(path+item, mode='r')
-        imgByteArr = io.BytesIO()
-        img.save(imgByteArr, format='PNG')
-        imgByteArr = imgByteArr.getvalue() 
-        img = six.BytesIO(imgByteArr)
-        upload_photo(appe,img,"Testpath.png")
+        try:
+            img = Image.open(path+item, mode='r')
+            imgByteArr = io.BytesIO()
+            img.save(imgByteArr, format='PNG')
+            imgByteArr = imgByteArr.getvalue() 
+            img = six.BytesIO(imgByteArr)
+            upload_photo(appe,img,item)
+        except Exception as e:
+            print(e)
