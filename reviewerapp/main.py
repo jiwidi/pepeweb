@@ -17,6 +17,7 @@ from datetime import datetime
 import logging
 import os
 import random
+import subprocess
 from flask import Flask, redirect, render_template, request
 
 from flask import Flask, render_template
@@ -25,6 +26,8 @@ from google.cloud import datastore
 from google.cloud import storage
 app = Flask(__name__)
 
+currentimg=""
+key=""
 
 @app.route('/')
 def root():
@@ -35,36 +38,36 @@ def root():
 
     # Use the Cloud Datastore client to fetch information from Datastore about
     # each photo.
-    query = datastore_client.query(kind='Pepe')
+    query = datastore_client.query(kind='pepestoreview')
     image_entities = list(query.fetch())
     #Only 1 img, testing
     idx = (int) (random.randrange(0, len(image_entities)))
     image_entities = [image_entities[idx]]
-
+    currentimg=image_entities[0]['blob_name']
     # Return a Jinja2 HTML template and pass in image_entities as a parameter.
-    return render_template('index.html', image_entities=image_entities)
+    return render_template('index.html', image_entities=image_entities,keyurl=image_entities[0].key.to_legacy_urlsafe().decode())
 
-@app.route('/refresh',methods=['GET','POST'])
-def refresh():
-    return redirect('/')
-
-@app.route('/upload_photo', methods=['GET', 'POST'])
-def upload_photo():
-    photo = request.files['file']
-
+@app.route('/approve_photo/<key>',methods=['GET','POST'])
+def refresh(key):
+    command = "gsutil mv {0} {1}".format(
+        "gs://pepestoreview/"+currentimg,
+        "gs://approvedpepes/"+currentimg
+    )
+    datastore_client = datastore.Client()
+    aux=datastore.Key.from_legacy_urlsafe(urlsafe=key)
     # Create a Cloud Storage client.
     storage_client = storage.Client()
 
     # Get the bucket that the file will be uploaded to.
-    bucket = storage_client.get_bucket("pepes")
-
+    #bucket = storage_client.get_bucket("pepes")
+    
     # Create a new blob and upload the file's content.
-    blob = bucket.blob(photo.filename)
-    blob.upload_from_string(
-            photo.read(), content_type=photo.content_type)
+    #blob = bucket.blob(photo.filename)
+    #blob.upload_from_string(
+    #        photo.read(), content_type=photo.content_type)
 
     # Make the blob publicly viewable.
-    blob.make_public()
+    #blob.make_public()
 
     # Create a Cloud Datastore client.
     datastore_client = datastore.Client()
@@ -73,10 +76,11 @@ def upload_photo():
     current_datetime = datetime.now()
 
     # The kind for the new entity.
-    kind = 'pepestoreview'
-
+    kind = 'Pepetest'
+    key = aux
+    aux = datastore_client.get(aux)
     # The name/ID for the new entity.
-    name = blob.name
+    name=aux['blob_name']    
 
     # Create the Cloud Datastore key for the new entity.
     key = datastore_client.key(kind, name)
@@ -84,15 +88,15 @@ def upload_photo():
     # Construct the new entity using the key. Set dictionary values for entity
     # keys blob_name, storage_public_url, timestamp, and joy.
     entity = datastore.Entity(key)
-    entity['blob_name'] = blob.name
-    entity['image_public_url'] = blob.public_url
+    entity['blob_name'] = aux['blob_name']
+    entity['image_public_url'] = aux['image_public_url']
     entity['timestamp'] = current_datetime
 
     # Save the new entity to Datastore.
     datastore_client.put(entity)
-
-    # Redirect to the home page.
+    datastore_client.delete(key)
     return redirect('/')
+
 
 @app.errorhandler(500)
 def server_error(e):
@@ -111,6 +115,5 @@ if __name__ == '__main__':
     # the "static" directory. See:
     # http://flask.pocoo.org/docs/1.0/quickstart/#static-files. Once deployed,
     # App Engine itself will serve those files as configured in app.yaml.
-    app.static_folder = 'static'
     app.run(host='127.0.0.1', port=8080, debug=True)
 # [START gae_python37_render_template]
