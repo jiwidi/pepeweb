@@ -1,29 +1,11 @@
 <!doctype html>
-<html>
-<head>
-  <title>Datastore and Firebase Auth Example</title>
-  <link rel= "stylesheet" type= "text/css" href= "{{ url_for('static',filename='style.css') }}">
-</head>
-<body>
-		<div class="container-fluid">
-			<div  class="jumbotron">
-				<h1 class="text-center"> Rarepepe </h1>
-				<form action="approve_photo/{{keyurl}}" method="post">
-				<h2 class="text-center"> The online collection of rarepes </h2>
-				<button name="forwardBtn" type="submit">Forward</button>
-				</form>	
-							<br> 
-						<div class="thumbnail">
-								{% for image_entity in image_entities %}
-								<img src="{{image_entity['image_public_url']}}" width=200 height=200>
-								{% endfor %} 
-						</div>
-				<br><br>
-			
-			<footer class="text-center">
-				<hr>
-				<p>All copyrights belong to pepe.</p>
-				</footer>  
-		</div>
-  </body>
-</html>
+<h1 style="text-align: center;">Rarepepe</h1>
+<form action="approve_photo/{{keyurl}}" method="post">
+<h2 style="text-align: center;">The online collection of rarepes</h2>
+ <button name="forwardBtn" type="submit">Approve pepe</button></form><br />
+<p style="text-align: center;"></p>
+<div style="text-align: center;"><img src="{{image_entities[0]['image_public_url']}}" width="200" height="200" /></div>
+<p style="text-align: center;"><br /><br /></p>
+<footer><hr />
+<p style="text-align: center;">All copyrights belong to pepe.</p>
+</footer>
