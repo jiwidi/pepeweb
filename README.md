@@ -1,7 +1,9 @@
 # Pepeweb
+
 > A web that gives you random pepes! Visit http://www.pepeweb.org/
 
-One to two paragraph statement about your product and what it does.
+
+A web app using [appengine](https://cloud.google.com/appengine/) for web deployment and  [Google Cloud datastore](https://cloud.google.com/datastore/) as the schemaless database for pepes.
 
 ![](readmefiles/pepeweb.png)
 
