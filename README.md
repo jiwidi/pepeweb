@@ -9,6 +9,11 @@ One to two paragraph statement about your product and what it does.
 
 Fully serverless implementation with appengine on gcloud. The web retrieves pepes tagged as approved from a g-datastore instance. Submitting pepes from the web interface is allowed and will be stored waiting for approval to appear on the web.
 
+## TODOs
+* Improve html/css on the web to make it look nicer
+* Support mobile devices
+* Allow users to downlod the entire database
+
 ## Release History
 
 * 0.0.1
